@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+  <title>mount test</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/3.5.11/dist/g2.min.js"></script>
+</head>
+<body>
+  <div id='app'>
+    <div v-if='isLoading'>
+      <p>Loading...</p>
+    </div>
+    <div v-else>
+      <div v-if='video === null'>
+        <p>Fail to load video!</p>
+      </div>
+      <div v-else>
+        <p>video info {{ video }} </p>
+        <p>history view chart:</p>
+        <!-- <div id="c1"></div> -->
+        <view-chart :video-records='videoRecords'></view-chart>
+      </div>
+    </div>
+  </div>
+  <script>
+    Vue.component('view-chart', {
+      props: [
+        'videoRecords'
+      ],
+      mounted: function() {
+        const chart = new G2.Chart({
+          container: 'c1',
+          width: 600,
+          height: 300,
+        });
+        chart.source(this.videoRecords);
+        chart
+          .line()
+          .position('added*view')
+        chart.render();
+      },
+      template: '<div id="c1"></div>'
+    })
+    var app = new Vue({
+      el: '#app',
+      data: function() {
+        return {
+          isLoading: false,
+          video: null,
+          videoRecords: null
+        }
+      },
+      methods: {
+        // renderChart: function() {
+        //   // render chart
+        //   console.log('c1: ' + document.getElementById('c1')); // check c1
+        //   const chart = new G2.Chart({
+        //     container: 'c1',
+        //     width: 600,
+        //     height: 300,
+        //   });
+        //   chart.source(this.videoRecords);
+        //   chart
+        //     .line()
+        //     .position('added*view')
+        //   chart.render();
+        // }
+      },
+      created: function() {
+        let that = this;
+        that.isLoading = true;
+        setTimeout( function() { 
+            // after 1000ms get video and videoRecords from api
+            that.video = {aid: 456930, title: '前尘如梦'};
+            that.videoRecords = [
+              {added: 1, view: 1},
+              {added: 2, view: 2},
+              {added: 3, view: 3},
+              {added: 4, view: 4},
+              {added: 5, view: 5}
+            ];
+            that.isLoading = false;
+          }, 1000); 
+      },
+      mounted: function() {
+        // this.renderChart(); // design 1
+        // console.log('mounted!'); // check mounted
+      },
+      watch: {
+        videoRecords: function() {
+          // this.renderChart(); // design 2
+        }
+      }
+    });
+  </script>
+</body>
