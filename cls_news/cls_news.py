@@ -56,11 +56,14 @@ def check():
         title = tds[0].findChildren('a')[0].string
         link = 'http://www.cls.edu.cn' + tds[0].findChildren('a')[0]['href']
         date = tds[1].string
-        if title == news_list[0][0] and link == news_list[0][1] and date == news_list[0][2]:
-            # got same, break
-            break
-        print(title, link, date)
-        news_list_new.append([title, link, date])
+        exist_flag = False
+        for news in news_list:
+            if title == news[0] and link == news[1] and date == news[2]:
+                exist_flag = True
+                break
+        if not exist_flag:
+            print(title, link, date)
+            news_list_new.append([title, link, date])
     
     with open(news_file_name, 'w') as f:
         for news in news_list_new:
